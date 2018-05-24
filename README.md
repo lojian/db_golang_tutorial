@@ -1,2 +1,3 @@
-# db_golang_tutorial
-Writing a sqlite clone from scratch in GO
+# Let's Build a Simple Database, in GO Programming Langauge
+---
+Inspirated from https://github.com/cstack/db_tutorial
