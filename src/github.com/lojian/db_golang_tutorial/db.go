@@ -24,11 +24,23 @@ const (
 
 	STATEMENT_INSERT StatementType = 0
 	STATEMENT_SELECT StatementType = 1
+
+	COLUMN_USERNAME_SIZE uint32 = 32
+	COLUMN_EMAIL_SIZE  uint32 = 255
 )
+
+type Row struct {
+	id uint32
+	username string
+	email string	
+}
 
 type Statement struct {
 	stmtType StatementType
+	row_to_insert Row
 }
+
+
 
 var (
 	scanner     *bufio.Scanner
