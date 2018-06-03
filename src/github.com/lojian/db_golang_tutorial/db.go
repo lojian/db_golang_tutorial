@@ -2,10 +2,10 @@ package main
 
 import (
 	"bufio"
+	"encoding/binary"
 	"fmt"
 	"os"
 	"strings"
-	"unsafe"
 )
 
 type MetaCommandResult int
@@ -29,13 +29,19 @@ const (
 	COLUMN_USERNAME_SIZE uint32 = 32
 	COLUMN_EMAIL_SIZE    uint32 = 255
 
-	ID_SIZE uintptr = unsafe.Offsetof(((*Row)(nil)).id)
+	ID_SIZE         uint32 = 4
+	USERNAME_SIZE   uint32 = COLUMN_USERNAME_SIZE
+	EMAIL_SIZE      uint32 = COLUMN_EMAIL_SIZE
+	ID_OFFSET              = 0
+	USERNAME_OFFSET        = ID_OFFSET + ID_SIZE
+	EMAIL_OFFSET           = USERNAME_OFFSET + USERNAME_SIZE
+	ROW_SIZE               = ID_SIZE + USERNAME_SIZE + EMAIL_SIZE
 )
 
 type Row struct {
 	id       uint32
-	username string
-	email    string
+	username [COLUMN_USERNAME_SIZE]byte
+	email    [COLUMN_EMAIL_SIZE]byte
 }
 
 type Statement struct {
@@ -92,10 +98,19 @@ func executeStatement(statement *Statement) {
 		break
 	}
 }
+
+func serializeRow(source *Row, destination [ROW_SIZE]byte) {
+	binary.LittleEndian.PutUint32(destination[0:3], source.id)
+	//copy(destination[USERNAME_OFFSET:USERNAME_OFFSET+32], source.username)
+}
 func main() {
 
 	for {
 		printPrompt()
+		fmt.Println(ID_SIZE)
+		fmt.Println(USERNAME_SIZE)
+		fmt.Println(EMAIL_SIZE)
+		fmt.Println(ROW_SIZE)
 		if scanner.Scan() {
 			inputBuffer = scanner.Text()
 			if inputBuffer[0] == '.' {
