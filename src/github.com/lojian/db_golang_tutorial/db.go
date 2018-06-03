@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unsafe"
 )
 
 type MetaCommandResult int
@@ -26,21 +27,21 @@ const (
 	STATEMENT_SELECT StatementType = 1
 
 	COLUMN_USERNAME_SIZE uint32 = 32
-	COLUMN_EMAIL_SIZE  uint32 = 255
+	COLUMN_EMAIL_SIZE    uint32 = 255
+
+	ID_SIZE uintptr = unsafe.Offsetof(((*Row)(nil)).id)
 )
 
 type Row struct {
-	id uint32
+	id       uint32
 	username string
-	email string	
+	email    string
 }
 
 type Statement struct {
-	stmtType StatementType
+	stmtType      StatementType
 	row_to_insert Row
 }
-
-
 
 var (
 	scanner     *bufio.Scanner
